@@ -20,7 +20,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: './src/index.html'
-      }
+      },
+      external: ['react', 'react-dom']
     }
   }
 });
