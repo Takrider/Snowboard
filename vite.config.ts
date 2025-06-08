@@ -21,7 +21,12 @@ export default defineConfig({
       input: {
         main: './src/index.html'
       },
-      external: ['react', 'react-dom']
+      external: ['react', 'react-dom'],
+      output: {
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
+      }
     }
   }
 });
