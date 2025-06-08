@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { Snowboard, SnowboardStatus } from '../types/snowboard';
 
 interface SnowboardListProps {
   snowboards: Snowboard[];
   onUpdateStatus: (id: number, status: SnowboardStatus) => void;
   onUpdateName: (id: number, name: string) => void;
+  onSave: () => void;
 }
 
-export const SnowboardList: React.FC<SnowboardListProps> = ({ snowboards, onUpdateStatus, onUpdateName }) => {
+export const SnowboardList: React.FC<SnowboardListProps> = ({ snowboards, onUpdateStatus, onUpdateName, onSave }) => {
   return (
     <div className="space-y-4">
       {snowboards.map((snowboard) => (
@@ -38,6 +39,14 @@ export const SnowboardList: React.FC<SnowboardListProps> = ({ snowboards, onUpda
           </div>
         </div>
       ))}
+      <div className="mt-4">
+        <button
+          onClick={onSave}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
+          データを保存
+        </button>
+      </div>
     </div>
   );
 };

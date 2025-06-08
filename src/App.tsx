@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Snowboard, SnowboardStatus } from './types/snowboard';
 import { SnowboardList } from './components/SnowboardList';
+import { saveData, loadData } from './utils/storage';
 
 function App() {
-  const [snowboards, setSnowboards] = useState<Snowboard[]>([]);
-  const [nextId, setNextId] = useState(1);
-
-  useEffect(() => {
-    // 初期データ
-    const initialSnowboards: Snowboard[] = [
+  const [snowboards, setSnowboards] = useState<Snowboard[]>(() => {
+    const savedData = loadData();
+    if (savedData && savedData.snowboards) {
+      return savedData.snowboards;
+    }
+    return [
       {
         id: 1,
         name: 'Snowboard 1',
@@ -24,9 +25,23 @@ function App() {
         updatedAt: new Date()
       }
     ];
-    setSnowboards(initialSnowboards);
-    setNextId(3);
-  }, []);
+  });
+
+  const [nextId, setNextId] = useState(() => {
+    const savedData = loadData();
+    return savedData?.nextId || 3;
+  });
+
+  const saveCurrentData = () => {
+    saveData({
+      snowboards: snowboards,
+      nextId: nextId
+    });
+  };
+
+  useEffect(() => {
+    saveCurrentData();
+  }, [snowboards, nextId]);
 
   const handleAddSnowboard = () => {
     const newSnowboard: Snowboard = {
@@ -36,25 +51,25 @@ function App() {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    setSnowboards([...snowboards, newSnowboard]);
-    setNextId(nextId + 1);
+    setSnowboards(prev => [...prev, newSnowboard]);
+    setNextId(prev => prev + 1);
   };
 
   const handleUpdateStatus = (id: number, status: SnowboardStatus) => {
-    setSnowboards(prev => 
-      prev.map(snowboard => 
-        snowboard.id === id 
-          ? { ...snowboard, status, updatedAt: new Date() } 
+    setSnowboards(prev =>
+      prev.map(snowboard =>
+        snowboard.id === id
+          ? { ...snowboard, status, updatedAt: new Date() }
           : snowboard
       )
     );
   };
 
   const handleUpdateName = (id: number, name: string) => {
-    setSnowboards(prev => 
-      prev.map(snowboard => 
-        snowboard.id === id 
-          ? { ...snowboard, name, updatedAt: new Date() } 
+    setSnowboards(prev =>
+      prev.map(snowboard =>
+        snowboard.id === id
+          ? { ...snowboard, name, updatedAt: new Date() }
           : snowboard
       )
     );
@@ -78,6 +93,7 @@ function App() {
           snowboards={snowboards}
           onUpdateStatus={handleUpdateStatus}
           onUpdateName={handleUpdateName}
+          onSave={saveCurrentData}
         />
       </div>
     </div>
