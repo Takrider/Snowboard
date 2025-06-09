@@ -25,9 +25,11 @@ export default defineConfig({
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]',
-        manualChunks: undefined
+        manualChunks: undefined,
+        inlineDynamicImports: true
       }
     },
-    minify: false
+    minify: false,
+    sourcemap: false
   }
 });
